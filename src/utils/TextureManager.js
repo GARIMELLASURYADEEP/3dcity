@@ -3,11 +3,11 @@ import * as THREE from 'three'
 const loader = new THREE.TextureLoader()
 
 const files = {
-  building1: '/building1.png',
-  building2: '/building2.png',
-  building3: '/building3.png',
-  building4: '/building4.png',
-  road: '/road.png'
+  building1: '/3dcity/building1.png',
+  building2: '/3dcity/building2.png',
+  building3: '/3dcity/building3.png',
+  building4: '/3dcity/building4.png',
+  road: '/3dcity/road.png'
 }
 
 function prepare(tex){
