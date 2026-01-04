@@ -32,7 +32,7 @@ jobs:
         run: npm install
       
       - name: Build
-        run: npm run build
+        run: npx vite build
         continue-on-error: false
       
       - name: Check build output
