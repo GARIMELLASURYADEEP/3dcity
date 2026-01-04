@@ -12,34 +12,49 @@ export default class BuildingSystem{
   }
 
   createDistricts(){
+    // We'll group buildings by (textureIndex, verticalRepeat) to avoid creating
+    // a material per building while allowing texture scale to vary with height.
     const textures = TextureManager.buildingTextures
-    const perGroup = Math.ceil(this.count / textures.length)
 
-    for(let t=0;t<textures.length;t++){
-      const geo = new THREE.BoxGeometry(1,1,1)
-      const material = TextureManager.getBuildingMaterial(t)
-      const inst = new THREE.InstancedMesh(geo, material, perGroup)
-      // disable casting shadows for instanced buildings to improve performance
-      inst.castShadow = false
-      inst.receiveShadow = false
+    const groups = new Map()
+
+    const hashPick = (x, z) => {
+      // deterministic hash to choose texture index so buildings keep same look
+      const v = Math.sin(x * 12.9898 + z * 78.233) * 43758.5453
+      return Math.abs(Math.floor(v)) % textures.length
+    }
+
+    for(let i=0;i<this.count;i++){
+      const x = randRange(-config.citySize/2 + 50, config.citySize/2 - 50)
+      const z = randRange(-config.citySize/2 + 50, config.citySize/2 - 50)
+      const h = Math.max(3, Math.round(randRange(3, 60)))
+
+      const texIdx = hashPick(x, z)
+      const verticalRepeat = Math.max(1, h / 3)
+      const key = `${texIdx}_${Math.round(verticalRepeat*100)/100}`
+
+      const matrix = new THREE.Matrix4()
+      matrix.makeScale(10, h * 2, 10)
+      matrix.setPosition(x, h, z)
+
+      if(!groups.has(key)) groups.set(key, {texIdx, verticalRepeat, matrices: []})
+      groups.get(key).matrices.push(matrix)
+    }
+
+    // Create instanced meshes per group (shared material per group)
+    const boxGeo = new THREE.BoxGeometry(1,1,1)
+    groups.forEach(({texIdx, verticalRepeat, matrices}) => {
+      const material = TextureManager.getBuildingMaterial(texIdx, verticalRepeat)
+      const inst = new THREE.InstancedMesh(boxGeo, material, matrices.length)
       inst.frustumCulled = true
+      inst.castShadow = true
+      inst.receiveShadow = true
 
-      for(let i=0;i<perGroup;i++){
-        const idx = t*perGroup + i
-        if(idx >= this.count) break
-        const x = randRange(-config.citySize/2 + 50, config.citySize/2 - 50)
-        const z = randRange(-config.citySize/2 + 50, config.citySize/2 - 50)
-        const h = Math.max(3, Math.round(randRange(3, 60)))
-        const matrix = new THREE.Matrix4()
-        matrix.makeScale(10, h*2, 10)
-        matrix.setPosition(x, h, z)
-        inst.setMatrixAt(i, matrix)
-      }
-
+      for(let i=0;i<matrices.length;i++) inst.setMatrixAt(i, matrices[i])
       inst.instanceMatrix.needsUpdate = true
       this.scene.add(inst)
       this.instancedGroups.push(inst)
-    }
+    })
   }
 
   update(dt){}

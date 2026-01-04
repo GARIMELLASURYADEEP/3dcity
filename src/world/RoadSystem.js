@@ -7,7 +7,7 @@ export default class RoadSystem{
   createGrid(){
     const size = config.citySize
     const step = config.blockSize
-    const roadMat = TextureManager.roadMaterial
+    const roadMat = TextureManager.getRoadMaterial()
     const tileFactor = 8
     for(let i=-size/2;i<=size/2;i+=step){
       const g = new THREE.PlaneGeometry(size, config.roadWidth)
