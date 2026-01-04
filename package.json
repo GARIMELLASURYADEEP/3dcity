@@ -1,24 +1,6 @@
 {
-  "name": "city-engine",
+  "name": "3dcity-static",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "start": "serve -s dist -l 0.0.0.0:$PORT"
-  },
-  "dependencies": {
-    "three": "^0.161.0",
-    "gsap": "^3.12.0",
-    "cannon-es": "^0.20.0",
-    "pathfinding": "^0.4.18",
-    "lil-gui": "^0.18.0",
-    "stats.js": "^0.17.0",
-    "serve": "^14.1.2"
-  },
-  "devDependencies": {
-    "vite": "^5.0.0"
-  }
+  "description": "Static build of the 3D City project (HTML/CSS/JS only)"
 }

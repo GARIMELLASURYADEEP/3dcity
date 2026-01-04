@@ -1,13 +1,5 @@
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
 
-FROM node:18-alpine
-WORKDIR /app
-RUN npm i -g serve
-COPY --from=builder /app/dist ./dist
-EXPOSE 3000
-CMD ["sh", "-c", "serve -s dist -l 0.0.0.0:$PORT"]
+# Dockerfile intentionally left as a placeholder.
+# This repository was converted to a static-only site (HTML/CSS/JS).
+# Remove this file or keep as-is; no Docker build is required for static hosting.
+
